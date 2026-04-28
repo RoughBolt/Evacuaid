@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.expo/
+.expo-shared/
+
+# Build outputs
+dist/
+build/
+*.js.map
+
+# Environment
+.env
+.env.local
+.env.production
+*.env
+
+# Expo
+apps/mobile/.expo/
+
+# Prisma
+packages/api/prisma/migrations/
+
+# MacOS
+.DS_Store
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
