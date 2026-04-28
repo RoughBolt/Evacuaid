@@ -16,7 +16,7 @@ During a crisis (such as a fire, medical emergency, or security threat), traditi
 *   **External Authority Escalation**: Integrates with Twilio to automatically dispatch SMS alerts to emergency services for critical incidents.
 *   **Offline Resilience**: Mobile app queues actions when disconnected and syncs automatically upon network restoration.
 *   **Zone Mapping**: Visualizes facility zones to identify safe vs. dangerous areas during an emergency.
-*   **Automated Emergency Triage Agent (Dialogflow CX)**: Acts as a first-responder conversational AI during mass panic scenarios. It interacts with guests using natural language to rapidly extract vital missing information (e.g., "Are injuries severe?", "Is the stairwell accessible?") and feeds this structured data directly into the Crisis Engine to prevent staff dashboard flooding.
+*   **Automated Emergency Triage Agent (Dialogflow CX)** ✅ *(Implemented in Prototype)*: Acts as a first-responder conversational AI during mass panic scenarios. It interacts with guests using natural language to rapidly extract vital missing information (e.g., "Are injuries severe?", "Is the stairwell accessible?") and feeds this structured data directly into the Crisis Engine to prevent staff dashboard flooding.
 
 ---
 
@@ -55,7 +55,106 @@ EvacuAid is built using a modern, full-stack monorepo architecture (via NPM Work
 *   **ORM**: Prisma
 *   **Caching/PubSub**: Redis
 
+### AI & Google Services
+*   **Conversational AI**: Google Dialogflow CX ✅ *(Implemented in Prototype)*
+*   **Generative AI**: Google Gemini API (`gemini-2.0-flash`) — Dynamic guidance & incident reports *(Planned)*
+*   **Maps**: Google Maps Platform — Interactive zone visualization *(Planned)*
+*   **Push Notifications**: Firebase Cloud Messaging (FCM) *(Planned)*
+
 ---
+
+## 🤖 Google AI Integrations
+
+EvacuAid is built with Google's AI ecosystem at its core, enabling intelligent, real-time emergency response that goes far beyond traditional rule-based systems. This section details both the **implemented** AI integration in the current prototype and the **planned** enhancements for future releases.
+
+---
+
+### ✅ Implemented — Google Dialogflow CX (Emergency Triage Agent)
+
+During a mass panic event, guests are scared and unable to fill structured forms. The **Dialogflow CX agent** acts as an AI-powered first-responder that communicates with guests in plain, natural language — collecting critical triage information calmly and efficiently.
+
+#### How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     EMERGENCY SCENARIO                          │
+│                                                                 │
+│  Guest triggers SOS  ──►  Dialogflow CX Agent (NLU)            │
+│                                    │                            │
+│              Natural Language Conversation:                     │
+│         "Are you injured?" / "Which floor?" / "Safe exit?"     │
+│                                    │                            │
+│                     Structured Data Extracted                   │
+│                                    │                            │
+│              Webhook ──► POST /api/webhook/dialogflow           │
+│                                    │                            │
+│              Crisis Engine processes triage payload             │
+│                                    │                            │
+│         Staff Dashboard receives real-time Socket.IO update     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Agent Conversation Flows
+
+| Flow | Example Dialogue | Purpose |
+|------|-----------------|---------|
+| **Injury Triage** | *"Is anyone injured? Can you describe how severe?"* | Determines if ambulance escalation is needed |
+| **Location Pinning** | *"Which floor are you on right now?"* | Feeds precise location into the Crisis Engine |
+| **Escape Assessment** | *"Is the stairwell near you accessible or blocked?"* | Updates zone danger status dynamically |
+| **Panic De-escalation** | *"Stay calm. Help is on the way. Here's what to do next…"* | Reduces guest panic while staff mobilize |
+
+#### Technical Integration
+
+*   **Platform**: Google Dialogflow CX (regional agent)
+*   **Webhook**: `POST /api/webhook/dialogflow` — receives fulfillment requests, updates incident records via Prisma, and emits Socket.IO events to the `hotel_staff` room.
+*   **Key Benefit**: Prevents the staff dashboard from being flooded with incomplete, panic-typed messages by collecting structured data upfront.
+
+---
+
+### 🔜 Planned — Gemini API (`gemini-2.0-flash`)
+
+The current `guidanceService.ts` uses **fully static, hardcoded templates** for evacuation instructions. The Gemini API will replace this with **dynamic, context-aware guidance** generated on-the-fly.
+
+#### Feature 1 — Dynamic Evacuation Guidance
+> Generates personalized step-by-step survival instructions based on incident type, guest's exact floor, zone status, and severity level — no more one-size-fits-all templates.
+
+```typescript
+// packages/api/src/services/guidanceService.ts (Planned)
+const prompt = `
+  A ${type} emergency (severity: ${severity}) has occurred on Floor ${floor}
+  at ${location}. Zones blocked: ${dangerZones.join(', ')}.
+  Generate calm, numbered evacuation instructions for a hotel guest.
+`;
+const result = await gemini.generateContent(prompt);
+```
+
+#### Feature 2 — AI Severity Re-Classification
+> Analyzes free-text incident descriptions to intelligently override the static severity map.
+> Example: *"small kitchen fire, already extinguished"* → downgraded from **CRITICAL** to **MEDIUM**.
+
+#### Feature 3 — Auto-Generated Incident Reports
+> On incident resolution, Gemini reads the full `IncidentUpdate` log and composes a formal management report with timeline, response summary, and improvement recommendations.
+
+---
+
+### 🔜 Planned — Google Maps Platform
+
+Upgrades `ZoneMapScreen.tsx` from a static graphic to a **live interactive map** with:
+*   🔴 Danger zone polygons rendered in real-time
+*   🟢 Safe zone overlays and evacuation route paths
+*   📍 Guest location pin for nearest exit calculation
+
+---
+
+### 🔜 Planned — Firebase Cloud Messaging (FCM)
+
+Replaces the current direct Expo Push API calls in `notificationService.ts` with **Firebase Cloud Messaging** for:
+*   Guaranteed delivery with receipts
+*   Notification analytics dashboard
+*   Topic-based broadcasting (e.g., `hotel_staff`, `hotel_guests`)
+
+---
+
 
 ## 🚀 Getting Started
 
@@ -131,5 +230,6 @@ EvacuAid/
 │   ├── api/             # Express/Node.js backend
 │   └── shared/          # Shared TypeScript interfaces & types
 ├── docker-compose.yml   # Postgres & Redis infrastructure
-└── test_e2e.sh          # E2E Smoke test script
+├── test_e2e.sh          # E2E Smoke test script
+└── README.md            # Project documentation & AI integration overview
 ```
