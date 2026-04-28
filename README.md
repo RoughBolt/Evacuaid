@@ -1,5 +1,7 @@
 # EvacuAid 🚨
 
+🎥 **[Watch the Demo Video](https://drive.google.com/file/d/1DUhAJjuVzXQEWjyn658ilmGaL8HRkGZl/view?usp=drivesdk)**
+
 **EvacuAid** is a real-time emergency management and rapid-response platform designed for large, high-occupancy facilities like hotels and corporate campuses. 
 
 During a crisis (such as a fire, medical emergency, or security threat), traditional communication breaks down. EvacuAid bridges this gap by providing a unified crisis management engine that connects guests directly to staff, automates emergency protocols, and ensures no one is left behind.
