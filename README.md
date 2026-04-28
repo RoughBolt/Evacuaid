@@ -16,6 +16,7 @@ During a crisis (such as a fire, medical emergency, or security threat), traditi
 *   **External Authority Escalation**: Integrates with Twilio to automatically dispatch SMS alerts to emergency services for critical incidents.
 *   **Offline Resilience**: Mobile app queues actions when disconnected and syncs automatically upon network restoration.
 *   **Zone Mapping**: Visualizes facility zones to identify safe vs. dangerous areas during an emergency.
+*   **Automated Emergency Triage Agent (Dialogflow CX)**: Acts as a first-responder conversational AI during mass panic scenarios. It interacts with guests using natural language to rapidly extract vital missing information (e.g., "Are injuries severe?", "Is the stairwell accessible?") and feeds this structured data directly into the Crisis Engine to prevent staff dashboard flooding.
 
 ---
 
