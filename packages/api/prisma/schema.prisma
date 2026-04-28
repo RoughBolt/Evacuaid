@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  GUEST
+  STAFF
+  ADMIN
+}
+
+enum IncidentType {
+  FIRE
+  MEDICAL
+  THEFT
+  FLOOD
+  EARTHQUAKE
+  OTHER
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  CREATED
+  ACTIVE
+  RESOLVED
+  REPORT_GENERATED
+}
+
+enum ZoneType {
+  DANGER
+  CAUTION
+  SAFE
+}
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  role        UserRole  @default(GUEST)
+  roomNumber  String?
+  employeeId  String?   @unique
+  passwordHash String?
+  pushToken   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  createdIncidents  Incident[] @relation("CreatedBy")
+  assignedIncidents Incident[] @relation("AssignedTo")
+  responses         Responder[]
+  updates           IncidentUpdate[]
+}
+
+model Zone {
+  id      String   @id @default(uuid())
+  name    String
+  type    ZoneType @default(SAFE)
+  floor   Int      @default(1)
+  x       Float
+  y       Float
+  width   Float
+  height  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Incident {
+  id          String           @id @default(cuid())
+  type        IncidentType
+  severity    IncidentSeverity
+  status      IncidentStatus   @default(CREATED)
+  location    String
+  floor       Int?
+  description String?
+  
+  createdById String
+  createdBy   User     @relation("CreatedBy", fields: [createdById], references: [id])
+  
+  assignedToId String?
+  assignedTo   User?    @relation("AssignedTo", fields: [assignedToId], references: [id])
+
+  authorityNotified Boolean @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  updates    IncidentUpdate[]
+  responders Responder[]
+}
+
+model IncidentUpdate {
+  id         String   @id @default(uuid())
+  message    String
+  source     String   @default("SYSTEM")
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Responder {
+  id         String   @id @default(uuid())
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  staffId    String
+  staff      User     @relation(fields: [staffId], references: [id])
+  assignedAt DateTime @default(now())
+  status     String   @default("ASSIGNED")
+}
+
+model EscapeRoute {
+  id           String   @id @default(uuid())
+  name         String
+  incidentType IncidentType
+  steps        Json
+  exits        Json
+  assemblyPoint String
+  createdAt    DateTime @default(now())
+}
