@@ -17,6 +17,22 @@ During a crisis (such as a fire, medical emergency, or security threat), traditi
 
 ---
 
+## 📸 Screenshots
+
+| Screenshot | Description |
+| :---: | :--- |
+| <img src="screenshots/01-guest-home-sos.jpeg" width="200" /> | **Guest Home Screen**<br>The main interface for guests, featuring a prominent, high-contrast SOS button for instant emergency triggering. |
+| <img src="screenshots/02-emergency-type.jpeg" width="200" /> | **Emergency Triage**<br>Guests can select the specific type of emergency (Fire, Medical, Earthquake) to provide immediate context to the Crisis Engine. |
+| <img src="screenshots/03-escape-guidance.jpeg" width="200" /> | **Escape Guidance**<br>Dynamic, step-by-step survival and evacuation instructions tailored specifically to the type of emergency reported. |
+| <img src="screenshots/04-hotel-zone-map.jpeg" width="200" /> | **Interactive Zone Map**<br>A live visual map of the facility highlighting danger zones (red) and safe zones (green) to guide safe evacuation routing. |
+| <img src="screenshots/05-staff-dashboard.jpeg" width="200" /> | **Staff Dashboard**<br>A real-time overview for security and management, displaying all active, critical, and resolved incidents sorted by severity. |
+| <img src="screenshots/06-report-incident.jpeg" width="200" /> | **Manual Incident Reporting**<br>Staff members can manually log incidents they discover directly into the system, bypassing the guest workflow. |
+| <img src="screenshots/07-incident-details.jpeg" width="200" /> | **Incident Details & Assignment**<br>The detailed view where staff can assign themselves as responders and execute resolution actions. |
+| <img src="screenshots/08-broadcast-sent.jpeg" width="200" /> | **Emergency Broadcasts**<br>Staff can instantly broadcast messages or alerts to all other personnel via the live Socket.IO connection. |
+| <img src="screenshots/09-incident-resolved.jpeg" width="200" /> | **Automated Incident Reports**<br>Once an emergency is marked as resolved, the system generates a full timeline report of all actions taken for auditing. |
+
+---
+
 ## 🛠 Tech Stack
 
 EvacuAid is built using a modern, full-stack monorepo architecture (via NPM Workspaces).
